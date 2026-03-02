@@ -26,6 +26,9 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->post('users/update/(:num)', 'Admin\UserCrud::update/$1');
     $routes->get('users/delete/(:num)', 'Admin\UserCrud::delete/$1');
     $routes->post('users/import', 'Admin\UserCrud::import_excel');
+    $routes->get('users/import_excel', static function() {
+        return view('admin/user_crud/import_excel', ['title' => 'Import Data User']);
+    });
     
     $routes->get('hierarchy', 'Admin\UserHierarchy::index');
     $routes->post('hierarchy/get_bawahan', 'Admin\UserHierarchy::get_bawahan');
