@@ -1,0 +1,31 @@
+.bg-sidebar-admin {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+}
+.bg-sidebar-pimpinan {
+    background: linear-gradient(135deg, #141E30 0%, #243B55 100%) !important;
+}
+.bg-sidebar-managerial {
+    background: linear-gradient(135deg, #870000 0%, #190A05 100%) !important;
+}
+.bg-sidebar-supervisor {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%) !important;
+}
+.bg-sidebar-kepalaunit {
+    background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%) !important;
+}
+.bg-sidebar-staff {
+    background: linear-gradient(135deg, #0052D4 0%, #4364F7 50%, #6FB1FC 100%) !important;
+}
+.sidebar-wrapper .menu .sidebar-item .sidebar-link,
+.sidebar-wrapper .sidebar-header,
+.sidebar-wrapper .menu .sidebar-title {
+    color: #ffffff !important;
+}
+.sidebar-wrapper .menu .sidebar-item.active > .sidebar-link {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+.sidebar-wrapper .menu .sidebar-item .sidebar-link i,
+.sidebar-wrapper .menu .sidebar-item .sidebar-link svg {
+    color: #ffffff !important;
+}
