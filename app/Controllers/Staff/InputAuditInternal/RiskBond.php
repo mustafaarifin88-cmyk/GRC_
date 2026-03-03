@@ -52,6 +52,10 @@ class RiskBond extends BaseController
         $data['lampiran'] = $this->uploadFiles($this->request->getFileMultiple('lampiran'));
 
         $this->riskModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Baru Masuk', 'Staff telah mengirimkan laporan Internal Risk Bond baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Data Internal Risk Bond berhasil dikirim.');
         return redirect()->to(base_url('staff/internal-grc/risk-bond'));
     }

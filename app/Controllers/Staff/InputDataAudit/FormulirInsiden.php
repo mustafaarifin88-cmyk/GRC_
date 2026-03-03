@@ -4,17 +4,14 @@ namespace App\Controllers\Staff\InputDataAudit;
 
 use App\Controllers\BaseController;
 use App\Models\FormsAudit\InsidenModel;
-use App\Models\MasterDataModel; 
 
 class FormulirInsiden extends BaseController
 {
     protected $insidenModel;
-    protected $masterDataModel;
 
     public function __construct()
     {
         $this->insidenModel = new InsidenModel();
-        $this->masterDataModel = new MasterDataModel();
     }
 
     public function index()
@@ -49,6 +46,10 @@ class FormulirInsiden extends BaseController
         $data['lampiran_bukti'] = $this->uploadFiles($this->request->getFileMultiple('lampiran_bukti'));
 
         $this->insidenModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Insiden Baru Masuk', 'Staff telah mengirimkan formulir pelaporan insiden baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Formulir Pelaporan Insiden berhasil dikirim.');
         return redirect()->to(base_url('staff/input-data-audit/formulir-insiden'));
     }

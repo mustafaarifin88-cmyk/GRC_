@@ -16,24 +16,48 @@
                     <li class="nav-item dropdown me-3">
                         <a class="nav-link active dropdown-toggle text-gray-600 position-relative" href="#" data-bs-toggle="dropdown" data-bs-display="static">
                             <i class='bi bi-bell bi-sub fs-4'></i>
+                            <?php
+                                $db = \Config\Database::connect();
+                                $notifikasi = $db->table('tb_notifikasi')
+                                                 ->where('user_id', session()->get('id'))
+                                                 ->where('is_read', 0)
+                                                 ->orderBy('created_at', 'DESC')
+                                                 ->get()->getResultArray();
+                                $notifCount = count($notifikasi);
+                            ?>
+                            <?php if($notifCount > 0): ?>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
-                                0
+                                <?= $notifCount ?>
                             </span>
+                            <?php endif; ?>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end notification-dropdown shadow-lg border-0" aria-labelledby="dropdownMenuButton">
-                            <li class="dropdown-header">
-                                <h6>Notifikasi</h6>
+                        <ul class="dropdown-menu dropdown-menu-end notification-dropdown shadow-lg border-0" aria-labelledby="dropdownMenuButton" style="min-width: 320px; max-height: 400px; overflow-y: auto;">
+                            <li class="dropdown-header d-flex justify-content-between align-items-center">
+                                <h6>Notifikasi (<?= $notifCount ?>)</h6>
+                                <?php if($notifCount > 0): ?>
+                                    <a href="<?= base_url('notifikasi/read-all') ?>" class="text-primary small text-decoration-none"><i class="fas fa-check-double me-1"></i>Tandai semua dibaca</a>
+                                <?php endif; ?>
                             </li>
-                            <li class="dropdown-item notification-item">
-                                <a class="d-flex align-items-center" href="#">
-                                    <div class="notification-icon bg-primary">
-                                        <i class="bi bi-info-circle"></i>
-                                    </div>
-                                    <div class="notification-text ms-4">
-                                        <p class="notification-title font-bold">Tidak ada notifikasi baru</p>
-                                    </div>
-                                </a>
-                            </li>
+                            <?php if($notifCount == 0): ?>
+                                <li class="dropdown-item notification-item">
+                                    <p class="text-center text-muted mb-0 py-2"><i class="fas fa-bell-slash fs-4 d-block mb-2 text-light"></i>Tidak ada notifikasi baru</p>
+                                </li>
+                            <?php else: ?>
+                                <?php foreach($notifikasi as $notif): ?>
+                                <li class="dropdown-item notification-item border-bottom px-3 py-2" style="white-space: normal;">
+                                    <a class="d-flex align-items-start text-decoration-none" href="<?= base_url('notifikasi/read/'.$notif['id']) ?>">
+                                        <div class="notification-icon bg-primary mt-1 text-white rounded-circle d-flex justify-content-center align-items-center flex-shrink-0" style="width:35px;height:35px;">
+                                            <i class="fas fa-info-circle fs-6"></i>
+                                        </div>
+                                        <div class="notification-text ms-3 flex-grow-1">
+                                            <p class="notification-title font-bold text-dark mb-1" style="font-size: 0.85rem;"><?= esc($notif['judul']) ?></p>
+                                            <p class="notification-subtitle font-thin text-muted mb-1 lh-sm" style="font-size: 0.75rem;"><?= esc($notif['pesan']) ?></p>
+                                            <small class="text-muted" style="font-size: 0.65rem;"><i class="fas fa-clock me-1"></i><?= date('d M Y, H:i', strtotime($notif['created_at'])) ?></small>
+                                        </div>
+                                    </a>
+                                </li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </ul>
                     </li>
                 </ul>

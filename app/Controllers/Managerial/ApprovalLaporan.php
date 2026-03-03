@@ -100,6 +100,9 @@ class ApprovalLaporan extends BaseController
         $model = $this->getModelByType($type);
         $model->update($id, ['status' => 'approve_mgr']);
         
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Di-Approve Managerial', 'Ada laporan strategis yang telah disetujui Managerial dan menunggu pengesahan akhir Anda.');
+
         session()->setFlashdata('success', 'Laporan berhasil di-Approve.');
         return redirect()->back();
     }

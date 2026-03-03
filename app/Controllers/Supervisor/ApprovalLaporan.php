@@ -88,6 +88,9 @@ class ApprovalLaporan extends BaseController
         $model = $this->getModelByType($type);
         $model->update($id, ['status' => 'approve_spv']);
         
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Di-Approve Supervisor', 'Ada laporan yang telah disetujui Supervisor dan menunggu review lanjutan Anda.');
+
         session()->setFlashdata('success', 'Laporan berhasil di-Approve.');
         return redirect()->back();
     }

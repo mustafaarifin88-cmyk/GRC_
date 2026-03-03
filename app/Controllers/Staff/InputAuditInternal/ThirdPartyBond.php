@@ -48,6 +48,10 @@ class ThirdPartyBond extends BaseController
         $data['lampiran'] = $this->uploadFiles($this->request->getFileMultiple('lampiran'));
 
         $this->thirdPartyModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Baru Masuk', 'Staff telah mengirimkan laporan Internal Third Party Bond baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Data Internal Third Party Bond berhasil dikirim.');
         return redirect()->to(base_url('staff/internal-grc/third-party-bond'));
     }

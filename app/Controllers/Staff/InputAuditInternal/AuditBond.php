@@ -73,6 +73,10 @@ class AuditBond extends BaseController
         $data['rtl_dokumen']  = $this->uploadFiles($this->request->getFileMultiple('rtl_dokumen'));
 
         $this->auditModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Baru Masuk', 'Staff telah mengirimkan laporan Internal Audit Bond baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Data Internal Audit Bond berhasil dikirim.');
         return redirect()->to(base_url('staff/internal-grc/audit-bond'));
     }

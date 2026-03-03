@@ -52,6 +52,10 @@ class ComplianceBond extends BaseController
         $data['item_3_file'] = $this->uploadFiles($this->request->getFileMultiple('item_3_file'));
 
         $this->complianceModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Baru Masuk', 'Staff telah mengirimkan formulir laporan Compliance Bond baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Formulir Compliance Bond berhasil dikirim.');
         return redirect()->to(base_url('staff/input-data-audit/compliance-bond'));
     }

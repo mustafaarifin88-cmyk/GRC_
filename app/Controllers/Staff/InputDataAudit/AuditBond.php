@@ -53,6 +53,10 @@ class AuditBond extends BaseController
         $data['temuan_bukti'] = $this->uploadFiles($this->request->getFileMultiple('temuan_bukti'));
 
         $this->auditModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Baru Masuk', 'Staff telah mengirimkan formulir laporan Audit Bond baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Formulir Audit Bond berhasil dikirim.');
         return redirect()->to(base_url('staff/input-data-audit/audit-bond'));
     }

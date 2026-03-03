@@ -57,6 +57,10 @@ class ComplianceBond extends BaseController
         $data['bk_lampiran']     = $this->uploadFiles($this->request->getFileMultiple('bk_lampiran'), 'audit_evidences');
 
         $this->complianceModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Baru Masuk', 'Staff telah mengirimkan laporan Internal Compliance Bond baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Data Internal Compliance Bond berhasil dikirim.');
         return redirect()->to(base_url('staff/internal-grc/compliance-bond'));
     }

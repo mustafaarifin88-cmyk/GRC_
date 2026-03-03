@@ -49,6 +49,10 @@ class ContinuityBond extends BaseController
         $data['lampiran'] = $this->uploadFiles($this->request->getFileMultiple('lampiran'));
 
         $this->continuityModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Baru Masuk', 'Staff telah mengirimkan laporan Internal Continuity Bond baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Data Internal Continuity Bond berhasil dikirim.');
         return redirect()->to(base_url('staff/internal-grc/continuity-bond'));
     }

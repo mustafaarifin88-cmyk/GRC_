@@ -54,6 +54,10 @@ class RiskBond extends BaseController
         $data['mitigasi_bukti'] = $this->uploadFiles($this->request->getFileMultiple('mitigasi_bukti'));
 
         $this->riskModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Baru Masuk', 'Staff telah mengirimkan formulir laporan Risk Bond baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Formulir Risk Bond berhasil dikirim.');
         return redirect()->to(base_url('staff/input-data-audit/risk-bond'));
     }

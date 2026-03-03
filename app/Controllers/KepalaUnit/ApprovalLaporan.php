@@ -67,6 +67,9 @@ class ApprovalLaporan extends BaseController
         $model = $this->getModelByType($type);
         $model->update($id, ['status' => 'approve_ku']);
         
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Di-Approve Kepala Unit', 'Ada laporan staff yang telah disetujui Kepala Unit dan menunggu review Anda.');
+
         session()->setFlashdata('success', 'Laporan berhasil di-Approve.');
         return redirect()->to(base_url('kepalaunit/approval'));
     }

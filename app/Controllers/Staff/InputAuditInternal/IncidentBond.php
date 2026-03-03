@@ -50,6 +50,10 @@ class IncidentBond extends BaseController
         $data['lampiran'] = $this->uploadFiles($this->request->getFileMultiple('lampiran'));
 
         $this->incidentModel->insert($data);
+
+        helper('notif');
+        kirim_notif_ke_atasan('Laporan Baru Masuk', 'Staff telah mengirimkan laporan Internal Incident Bond baru yang menunggu verifikasi Anda.');
+
         session()->setFlashdata('success', 'Data Internal Incident Bond berhasil dikirim.');
         return redirect()->to(base_url('staff/internal-grc/incident-bond'));
     }
