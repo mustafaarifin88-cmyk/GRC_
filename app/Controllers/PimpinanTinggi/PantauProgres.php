@@ -8,32 +8,73 @@ class PantauProgres extends BaseController
 {
     public function index()
     {
-        $userId = session()->get('id');
         $data = [
-            'title' => 'Pantau Progres Laporan Saya',
-            'da_audit'      => (new \App\Models\FormsAudit\AuditBondModel())->where('user_id', $userId)->findAll(),
-            'da_compliance' => (new \App\Models\FormsAudit\ComplianceBondModel())->where('user_id', $userId)->findAll(),
-            'da_risk'       => (new \App\Models\FormsAudit\RiskBondModel())->where('user_id', $userId)->findAll(),
-            'da_insiden'    => (new \App\Models\FormsAudit\InsidenModel())->where('user_id', $userId)->findAll(),
-            'igrc_audit'       => (new \App\Models\FormsInternalGRC\IntAuditBondModel())->where('user_id', $userId)->findAll(),
-            'igrc_compliance'  => (new \App\Models\FormsInternalGRC\IntComplianceBondModel())->where('user_id', $userId)->findAll(),
-            'igrc_risk'        => (new \App\Models\FormsInternalGRC\IntRiskBondModel())->where('user_id', $userId)->findAll(),
-            'igrc_fraud'       => (new \App\Models\FormsInternalGRC\IntFraudBondModel())->where('user_id', $userId)->findAll(),
-            'igrc_incident'    => (new \App\Models\FormsInternalGRC\IntIncidentBondModel())->where('user_id', $userId)->findAll(),
-            'igrc_cyber'       => (new \App\Models\FormsInternalGRC\IntCyberBondModel())->where('user_id', $userId)->findAll(),
-            'igrc_third_party' => (new \App\Models\FormsInternalGRC\IntThirdPartyBondModel())->where('user_id', $userId)->findAll(),
-            'igrc_continuity'  => (new \App\Models\FormsInternalGRC\IntContinuityBondModel())->where('user_id', $userId)->findAll(),
-            'igrc_control'     => (new \App\Models\FormsInternalGRC\IntControlBondModel())->where('user_id', $userId)->findAll(),
+            'title'            => 'Pantau Progres & Riwayat Pengesahan',
+            'da_audit'         => $this->getTrackedReports(\App\Models\FormsAudit\AuditBondModel::class),
+            'da_compliance'    => $this->getTrackedReports(\App\Models\FormsAudit\ComplianceBondModel::class),
+            'da_risk'          => $this->getTrackedReports(\App\Models\FormsAudit\RiskBondModel::class),
+            'da_insiden'       => $this->getTrackedReports(\App\Models\FormsAudit\InsidenModel::class),
+            'igrc_audit'       => $this->getTrackedReports(\App\Models\FormsInternalGRC\IntAuditBondModel::class),
+            'igrc_compliance'  => $this->getTrackedReports(\App\Models\FormsInternalGRC\IntComplianceBondModel::class),
+            'igrc_risk'        => $this->getTrackedReports(\App\Models\FormsInternalGRC\IntRiskBondModel::class),
+            'igrc_fraud'       => $this->getTrackedReports(\App\Models\FormsInternalGRC\IntFraudBondModel::class),
+            'igrc_incident'    => $this->getTrackedReports(\App\Models\FormsInternalGRC\IntIncidentBondModel::class),
+            'igrc_cyber'       => $this->getTrackedReports(\App\Models\FormsInternalGRC\IntCyberBondModel::class),
+            'igrc_third_party' => $this->getTrackedReports(\App\Models\FormsInternalGRC\IntThirdPartyBondModel::class),
+            'igrc_continuity'  => $this->getTrackedReports(\App\Models\FormsInternalGRC\IntContinuityBondModel::class),
+            'igrc_control'     => $this->getTrackedReports(\App\Models\FormsInternalGRC\IntControlBondModel::class),
         ];
         return view('pimpinan_tinggi/pantau_progres/index', $data);
     }
 
+    private function getTrackedReports($modelClass)
+    {
+        $userId = session()->get('id');
+        $model = new $modelClass();
+        
+        $downlineIds = $this->getAllSubordinates($userId);
+        
+        $statuses = ['approve_pt', 'ditolak'];
+
+        $builder = $model->select($model->table . '.*, tb_users.nama_lengkap as nama_pembuat')
+                         ->join('tb_users', 'tb_users.id = ' . $model->table . '.user_id', 'left');
+
+        $builder->groupStart()
+                ->where($model->table . '.user_id', $userId);
+                
+        if (!empty($downlineIds)) {
+            $builder->orGroupStart()
+                    ->whereIn($model->table . '.user_id', $downlineIds)
+                    ->whereIn($model->table . '.status', $statuses)
+                    ->groupEnd();
+        }
+        $builder->groupEnd();
+
+        return $builder->orderBy($model->table . '.created_at', 'DESC')->findAll();
+    }
+
+    private function getAllSubordinates($userIds)
+    {
+        $db = \Config\Database::connect();
+        $allBawahan = [];
+        $currentAtasan = is_array($userIds) ? $userIds : [$userIds];
+        
+        while (!empty($currentAtasan)) {
+            $res = $db->table('tb_user_hierarchy')->whereIn('atasan_id', $currentAtasan)->get()->getResultArray();
+            $bawahanIds = array_column($res, 'bawahan_id');
+            if (empty($bawahanIds)) break;
+            $allBawahan = array_merge($allBawahan, $bawahanIds);
+            $currentAtasan = $bawahanIds;
+        }
+        return array_unique($allBawahan);
+    }
+
     public function detail_alasan($type, $id)
     {
-        $model = $this->getModelByType($type);
+        $model = clone $this->getModelByType($type);
         if ($model) {
             $laporan = $model->find($id);
-            return $this->response->setJSON(['alasan_tolak' => $laporan['alasan_tolak'] ?? 'Tidak ada alasan.']);
+            return $this->response->setJSON(['alasan_tolak' => $laporan['alasan_tolak'] ?? 'Tidak ada alasan terlampir.']);
         }
         return $this->response->setJSON(['alasan_tolak' => 'Data tidak ditemukan.']);
     }

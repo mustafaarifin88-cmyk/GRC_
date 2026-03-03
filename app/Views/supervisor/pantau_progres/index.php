@@ -13,6 +13,7 @@
 </style>
 
 <div class="card shadow border-0 rounded-4 p-4">
+    <div class="alert alert-info border-0 shadow-sm mb-4"><i class="fas fa-info-circle me-2"></i>Daftar di bawah ini menampilkan laporan yang <b>Anda buat sendiri</b> maupun laporan dari staff yang <b>telah Anda Approve</b> sehingga Anda dapat memantau progres akhirnya.</div>
     <ul class="nav nav-pills main-tab" id="mainTab" role="tablist">
         <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#data-audit-tab">1. Data Audit</button></li>
         <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#internal-grc-tab">2. Internal GRC</button></li>
@@ -33,12 +34,15 @@
                 foreach($da_tabs as $id => $data): ?>
                     <div class="tab-pane fade <?= $first ? 'show active' : '' ?>" id="<?= $id ?>">
                         <table class="table table-striped dt-table">
-                            <thead class="bg-light"><tr><th>Judul</th><th>Tanggal</th><th>Status Terkini</th></tr></thead>
+                            <thead class="bg-light"><tr><th>Judul & Pembuat</th><th>Tanggal Submit</th><th>Status Terkini</th></tr></thead>
                             <tbody>
                                 <?php foreach($data as $d): ?>
                                 <tr>
-                                    <td><?= esc($d['judul']) ?></td>
-                                    <td><?= date('d M Y', strtotime($d['created_at'])) ?></td>
+                                    <td>
+                                        <span class="fw-bold d-block text-dark"><?= esc($d['judul'] ?? 'Tanpa Judul') ?></span>
+                                        <small class="text-primary"><i class="fas fa-user-edit me-1"></i> <?= esc($d['nama_pembuat'] ?? 'Saya') ?></small>
+                                    </td>
+                                    <td><?= date('d M Y, H:i', strtotime($d['created_at'])) ?></td>
                                     <td><?= status_chain(str_replace('-', '_', $id), $d['id'], $d['status']) ?></td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -72,12 +76,15 @@
                 foreach($igrc_tabs as $id => $data): ?>
                     <div class="tab-pane fade <?= $first ? 'show active' : '' ?>" id="<?= $id ?>">
                         <table class="table table-striped dt-table">
-                            <thead class="bg-light"><tr><th>Judul/Objek</th><th>Tanggal</th><th>Status Terkini</th></tr></thead>
+                            <thead class="bg-light"><tr><th>Judul/Objek & Pembuat</th><th>Tanggal Submit</th><th>Status Terkini</th></tr></thead>
                             <tbody>
                                 <?php foreach($data as $d): ?>
                                 <tr>
-                                    <td><?= esc($d['judul'] ?? $d['no_lisensi'] ?? $d['nama_peraturan'] ?? $d['aset'] ?? $d['nama_perusahaan'] ?? $d['bia_proses'] ?? $d['nama_kontrol'] ?? 'Tanpa Judul') ?></td>
-                                    <td><?= date('d M Y', strtotime($d['created_at'])) ?></td>
+                                    <td>
+                                        <span class="fw-bold d-block text-dark"><?= esc($d['judul'] ?? $d['no_lisensi'] ?? $d['nama_peraturan'] ?? $d['aset'] ?? $d['nama_perusahaan'] ?? $d['bia_proses'] ?? $d['nama_kontrol'] ?? 'Tanpa Judul') ?></span>
+                                        <small class="text-primary"><i class="fas fa-user-edit me-1"></i> <?= esc($d['nama_pembuat'] ?? 'Saya') ?></small>
+                                    </td>
+                                    <td><?= date('d M Y, H:i', strtotime($d['created_at'])) ?></td>
                                     <td><?= status_chain(str_replace('-', '_', $id), $d['id'], $d['status']) ?></td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -94,10 +101,10 @@
 function status_chain($type, $id, $status) {
     if ($status == 'proses') return '<span class="badge bg-secondary"><i class="fas fa-clock me-1"></i> Menunggu Kepala Unit</span>';
     if ($status == 'approve_ku') return '<span class="badge bg-info text-dark"><i class="fas fa-check me-1"></i> Disetujui KU <i class="fas fa-arrow-right mx-1"></i> Menunggu SPV</span>';
-    if ($status == 'approve_spv') return '<span class="badge bg-primary"><i class="fas fa-check-double me-1"></i> Disetujui SPV <i class="fas fa-arrow-right mx-1"></i> Menunggu Managerial</span>';
+    if ($status == 'approve_spv') return '<span class="badge bg-primary"><i class="fas fa-check-double me-1"></i> Disetujui SPV <i class="fas fa-arrow-right mx-1"></i> Menunggu MGR</span>';
     if ($status == 'approve_mgr') return '<span class="badge bg-warning text-dark"><i class="fas fa-check-double me-1"></i> Disetujui MGR <i class="fas fa-arrow-right mx-1"></i> Menunggu Pimpinan</span>';
-    if ($status == 'approve_pt') return '<span class="badge bg-success"><i class="fas fa-stamp me-1"></i> Selesai (Disahkan Pimpinan Tinggi)</span>';
-    if ($status == 'ditolak') return '<span class="badge bg-danger" onclick="cekAlasan(\''.$type.'\', '.$id.')" style="cursor:pointer" title="Klik untuk lihat alasan"><i class="fas fa-times-circle me-1"></i> Ditolak (Lihat Alasan)</span>';
+    if ($status == 'approve_pt') return '<span class="badge bg-success"><i class="fas fa-stamp me-1"></i> Selesai (Final)</span>';
+    if ($status == 'ditolak') return '<span class="badge bg-danger shadow-sm" onclick="cekAlasan(\''.$type.'\', '.$id.')" style="cursor:pointer" title="Klik untuk lihat alasan"><i class="fas fa-times-circle me-1"></i> Ditolak (Klik Detail)</span>';
     return '<span class="badge bg-dark">Tidak Diketahui</span>';
 }
 ?>
