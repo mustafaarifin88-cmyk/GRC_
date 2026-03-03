@@ -12,14 +12,14 @@
 <div class="row">
     <div class="col-md-3">
         <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-3">
+            <div class="card-body p-3" style="max-height: 80vh; overflow-y: auto;">
                 <h6 class="fw-bold text-muted mb-3 ps-2">Kategori Laporan</h6>
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <?php 
                     $labels = [
-                        'audit' => 'Audit Bond', 'compliance' => 'Compliance Bond', 'risk' => 'Risk Bond', 'insiden' => 'Formulir Insiden',
-                        'int_audit' => 'Int. Audit Bond', 'int_compliance' => 'Int. Compliance', 'int_risk' => 'Int. Risk Bond', 'int_fraud' => 'Int. Fraud Bond',
-                        'int_incident' => 'Int. Incident Bond', 'int_cyber' => 'Int. Cyber Bond', 'int_third_party' => 'Int. Third Party', 'int_continuity' => 'Int. Continuity', 'int_control' => 'Int. Control Bond'
+                        'audit' => 'Data: Audit Bond', 'compliance' => 'Data: Compliance Bond', 'risk' => 'Data: Risk Bond', 'insiden' => 'Data: Insiden',
+                        'int_audit' => 'Int: Audit Bond', 'int_compliance' => 'Int: Compliance', 'int_risk' => 'Int: Risk Bond', 'int_fraud' => 'Int: Fraud Bond',
+                        'int_incident' => 'Int: Incident Bond', 'int_cyber' => 'Int: Cyber Bond', 'int_third_party' => 'Int: Third Party', 'int_continuity' => 'Int: Continuity', 'int_control' => 'Int: Control Bond'
                     ];
                     $first = true;
                     foreach($labels as $key => $label): ?>
@@ -48,24 +48,24 @@
                                             <th>No</th>
                                             <th>Nama Staff</th>
                                             <th>Judul Laporan</th>
-                                            <th>Tanggal Dibuat</th>
+                                            <th>Tanggal</th>
                                             <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if(empty($laporan[$key])): ?>
-                                            <tr><td colspan="5" class="text-center text-muted">Tidak ada laporan yang perlu di-approve.</td></tr>
+                                            <tr><td colspan="5" class="text-center text-muted py-4">Tidak ada laporan yang perlu di-approve saat ini.</td></tr>
                                         <?php else: ?>
                                             <?php $no=1; foreach($laporan[$key] as $row): ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
                                                 <td class="fw-bold"><?= esc($row['nama_lengkap']) ?></td>
-                                                <td><?= esc($row['judul'] ?? $row['nama_peraturan'] ?? $row['aset'] ?? $row['bia_proses'] ?? 'Tanpa Judul') ?></td>
-                                                <td><?= date('d M Y', strtotime($row['created_at'])) ?></td>
+                                                <td><?= esc($row['judul'] ?? $row['no_lisensi'] ?? $row['nama_peraturan'] ?? $row['aset'] ?? $row['nama_perusahaan'] ?? $row['bia_proses'] ?? $row['nama_kontrol'] ?? 'Tanpa Judul') ?></td>
+                                                <td><?= date('d M Y, H:i', strtotime($row['created_at'])) ?></td>
                                                 <td class="text-center">
-                                                    <!-- Optional: Button Detail -->
-                                                    <a href="<?= base_url('kepalaunit/approval/approve/'.$key.'/'.$row['id']) ?>" class="btn btn-sm btn-success rounded-circle shadow-sm me-1" title="Approve" onclick="return confirm('Yakin ingin menyetujui laporan ini?')"><i class="fas fa-check"></i></a>
-                                                    <button type="button" class="btn btn-sm btn-danger rounded-circle shadow-sm" title="Tolak" onclick="openRejectModal('<?= $key ?>', <?= $row['id'] ?>)"><i class="fas fa-times"></i></button>
+                                                    <a href="<?= base_url('kepalaunit/approval/detail/'.$key.'/'.$row['id']) ?>" class="btn btn-sm btn-info text-white rounded-pill shadow-sm px-3">
+                                                        <i class="fas fa-eye me-1"></i> Lihat Laporan
+                                                    </a>
                                                 </td>
                                             </tr>
                                             <?php endforeach; ?>
@@ -81,37 +81,9 @@
     </div>
 </div>
 
-<!-- Modal Reject -->
-<div class="modal fade" id="rejectModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0 shadow-lg">
-            <div class="modal-header bg-danger text-white rounded-top-4">
-                <h5 class="modal-title text-white"><i class="fas fa-exclamation-triangle me-2"></i>Tolak Laporan</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="<?= base_url('kepalaunit/approval/reject') ?>" method="POST">
-                <div class="modal-body p-4">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="type" id="reject_type">
-                    <input type="hidden" name="id" id="reject_id">
-                    <div class="form-group">
-                        <label class="fw-bold mb-2">Alasan Penolakan <span class="text-danger">*</span></label>
-                        <textarea class="form-control border-danger border-opacity-25" name="alasan_tolak" rows="4" required placeholder="Jelaskan alasan laporan ini ditolak agar staff dapat memperbaikinya..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer bg-light border-0 rounded-bottom-4">
-                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-danger rounded-pill px-4 shadow-sm"><i class="fas fa-paper-plane me-2"></i>Kirim Penolakan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-<script src="<?= base_url('assets/extensions/jquery/jquery.min.js') ?>"></script>
 <script src="<?= base_url('assets/extensions/simple-datatables/umd/simple-datatables.js') ?>"></script>
 <script>
     document.querySelectorAll('.dt-table').forEach(table => {
@@ -119,11 +91,5 @@
             new simpleDatatables.DataTable(table);
         }
     });
-
-    function openRejectModal(type, id) {
-        document.getElementById('reject_type').value = type;
-        document.getElementById('reject_id').value = id;
-        new bootstrap.Modal(document.getElementById('rejectModal')).show();
-    }
 </script>
 <?= $this->endSection() ?>

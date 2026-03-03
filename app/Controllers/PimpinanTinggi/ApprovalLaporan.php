@@ -111,8 +111,15 @@ class ApprovalLaporan extends BaseController
         $model = $this->getModelByType($type);
         $model->update($id, ['status' => 'approve_pt']);
         
-        session()->setFlashdata('success', 'Laporan berhasil di-Approve.');
-        return redirect()->back();
+        $laporan = $model->find($id);
+        $this->notificationModel->insert([
+            'user_id' => $laporan['user_id'],
+            'judul'   => 'Laporan Disahkan',
+            'pesan'   => 'Selamat! Laporan Anda telah disahkan secara final oleh Pimpinan Tinggi.'
+        ]);
+
+        session()->setFlashdata('success', 'Laporan berhasil di-Approve secara final.');
+        return redirect()->to(base_url('pimpinan/approval'));
     }
 
     public function reject()
@@ -134,7 +141,7 @@ class ApprovalLaporan extends BaseController
         $this->notificationModel->insert([
             'user_id' => $laporan['user_id'],
             'judul'   => 'Laporan Ditolak Pimpinan Tinggi',
-            'pesan'   => 'Laporan (' . ($laporan['judul'] ?? 'Tanpa Judul') . ') ditolak. Alasan: ' . $alasan
+            'pesan'   => 'Laporan ditolak. Alasan: ' . $alasan
         ]);
 
         $atasanIds = $this->hierarchyModel->where('bawahan_id', $laporan['user_id'])->findAll();
@@ -149,7 +156,7 @@ class ApprovalLaporan extends BaseController
         }
 
         session()->setFlashdata('success', 'Laporan berhasil di-Reject.');
-        return redirect()->back();
+        return redirect()->to(base_url('pimpinan/approval'));
     }
 
     public function export_excel($type)

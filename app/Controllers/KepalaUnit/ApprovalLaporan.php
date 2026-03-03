@@ -93,7 +93,7 @@ class ApprovalLaporan extends BaseController
         $this->notificationModel->insert([
             'user_id' => $laporan['user_id'],
             'judul'   => 'Laporan Ditolak Kepala Unit',
-            'pesan'   => 'Laporan Anda (' . ($laporan['judul'] ?? 'Tanpa Judul') . ') ditolak. Alasan: ' . $alasan
+            'pesan'   => 'Laporan Anda ditolak. Alasan: ' . $alasan
         ]);
 
         session()->setFlashdata('success', 'Laporan berhasil di-Reject.');

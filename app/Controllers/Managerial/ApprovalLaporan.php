@@ -104,7 +104,7 @@ class ApprovalLaporan extends BaseController
         kirim_notif_ke_atasan('Laporan Di-Approve Managerial', 'Ada laporan strategis yang telah disetujui Managerial dan menunggu pengesahan akhir Anda.');
 
         session()->setFlashdata('success', 'Laporan berhasil di-Approve.');
-        return redirect()->back();
+        return redirect()->to(base_url('managerial/approval'));
     }
 
     public function reject()
@@ -126,7 +126,7 @@ class ApprovalLaporan extends BaseController
         $this->notificationModel->insert([
             'user_id' => $laporan['user_id'],
             'judul'   => 'Laporan Ditolak Managerial',
-            'pesan'   => 'Laporan (' . ($laporan['judul'] ?? 'Tanpa Judul') . ') ditolak. Alasan: ' . $alasan
+            'pesan'   => 'Laporan ditolak. Alasan: ' . $alasan
         ]);
 
         $atasanIds = $this->hierarchyModel->where('bawahan_id', $laporan['user_id'])->findAll();
@@ -141,7 +141,7 @@ class ApprovalLaporan extends BaseController
         }
 
         session()->setFlashdata('success', 'Laporan berhasil di-Reject.');
-        return redirect()->back();
+        return redirect()->to(base_url('managerial/approval'));
     }
 
     public function export_excel($type)

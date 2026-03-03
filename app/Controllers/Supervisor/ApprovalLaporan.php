@@ -92,7 +92,7 @@ class ApprovalLaporan extends BaseController
         kirim_notif_ke_atasan('Laporan Di-Approve Supervisor', 'Ada laporan yang telah disetujui Supervisor dan menunggu review lanjutan Anda.');
 
         session()->setFlashdata('success', 'Laporan berhasil di-Approve.');
-        return redirect()->back();
+        return redirect()->to(base_url('supervisor/approval'));
     }
 
     public function reject()
@@ -114,7 +114,7 @@ class ApprovalLaporan extends BaseController
         $this->notificationModel->insert([
             'user_id' => $laporan['user_id'],
             'judul'   => 'Laporan Ditolak Supervisor',
-            'pesan'   => 'Laporan (' . ($laporan['judul'] ?? 'Tanpa Judul') . ') ditolak. Alasan: ' . $alasan
+            'pesan'   => 'Laporan ditolak. Alasan: ' . $alasan
         ]);
 
         $atasanIds = $this->hierarchyModel->where('bawahan_id', $laporan['user_id'])->findAll();
@@ -129,7 +129,7 @@ class ApprovalLaporan extends BaseController
         }
 
         session()->setFlashdata('success', 'Laporan berhasil di-Reject.');
-        return redirect()->back();
+        return redirect()->to(base_url('supervisor/approval'));
     }
 
     public function export_excel($type)

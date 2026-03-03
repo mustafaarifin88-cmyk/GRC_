@@ -5,117 +5,100 @@
 <link rel="stylesheet" href="<?= base_url('assets/compiled/css/table-datatable.css') ?>">
 
 <style>
-    .nav-tabs .nav-link { border-radius: 10px 10px 0 0; font-weight: bold; padding: 12px 20px; color: #6c757d; border: none; }
-    .nav-tabs .nav-link.active { background: linear-gradient(135deg, #0052D4, #4364F7); color: white; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); }
-    .status-badge { cursor: pointer; transition: transform 0.2s; }
-    .status-badge:hover { transform: scale(1.05); }
+    .nav-tabs .nav-link { font-weight: bold; color: #6c757d; border: none; padding: 10px 20px;}
+    .nav-tabs .nav-link.active { background: linear-gradient(135deg, #0052D4, #4364F7); color: white; border-radius: 10px 10px 0 0; }
+    .main-tab { border-bottom: 2px solid #4364F7; margin-bottom: 20px; }
+    .main-tab .nav-link.active { background: #4364F7; color: white; border-radius: 5px; }
+    .main-tab .nav-link { border-radius: 5px; margin-right: 5px; }
 </style>
 
-<div class="row">
-    <div class="col-12">
-        <div class="card shadow border-0 rounded-4 p-3">
-            <ul class="nav nav-tabs border-0 mb-3" id="progresTab" role="tablist">
-                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#audit">Audit Bond</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#compliance">Compliance Bond</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#risk">Risk Bond</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#insiden">Insiden</button></li>
+<div class="card shadow border-0 rounded-4 p-4">
+    <ul class="nav nav-pills main-tab" id="mainTab" role="tablist">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#data-audit-tab">1. Data Audit</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#internal-grc-tab">2. Internal GRC</button></li>
+    </ul>
+
+    <div class="tab-content" id="mainTabContent">
+        <div class="tab-pane fade show active" id="data-audit-tab">
+            <ul class="nav nav-tabs border-0 mb-3" style="overflow-x: auto; flex-wrap: nowrap; white-space: nowrap;">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#da-audit">Audit Bond</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#da-compliance">Compliance Bond</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#da-risk">Risk Bond</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#da-insiden">Insiden</button></li>
             </ul>
+            <div class="tab-content">
+                <?php 
+                $da_tabs = ['da-audit'=>$da_audit, 'da-compliance'=>$da_compliance, 'da-risk'=>$da_risk, 'da-insiden'=>$da_insiden];
+                $first = true;
+                foreach($da_tabs as $id => $data): ?>
+                    <div class="tab-pane fade <?= $first ? 'show active' : '' ?>" id="<?= $id ?>">
+                        <table class="table table-striped dt-table">
+                            <thead class="bg-light"><tr><th>Judul</th><th>Tanggal</th><th>Status Terkini</th></tr></thead>
+                            <tbody>
+                                <?php foreach($data as $d): ?>
+                                <tr>
+                                    <td><?= esc($d['judul']) ?></td>
+                                    <td><?= date('d M Y', strtotime($d['created_at'])) ?></td>
+                                    <td><?= status_chain(str_replace('-', '_', $id), $d['id'], $d['status']) ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php $first = false; endforeach; ?>
+            </div>
+        </div>
 
-            <div class="tab-content" id="progresTabContent">
-                <!-- Data Audit -->
-                <div class="tab-pane fade show active" id="audit">
-                    <table class="table table-striped" id="tableAudit">
-                        <thead class="bg-light">
-                            <tr><th>No</th><th>Judul</th><th>Tanggal Audit</th><th>Status Terkini</th></tr>
-                        </thead>
-                        <tbody>
-                            <?php $no=1; foreach($audit as $d): ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td class="fw-bold text-primary"><?= esc($d['judul']) ?></td>
-                                <td><?= date('d M Y', strtotime($d['tanggal_audit'])) ?></td>
-                                <td><?= status_badge('audit', $d['id'], $d['status']) ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Data Compliance -->
-                <div class="tab-pane fade" id="compliance">
-                    <table class="table table-striped" id="tableCompliance">
-                        <thead class="bg-light">
-                            <tr><th>No</th><th>Judul</th><th>Periode</th><th>Tanggal Penilaian</th><th>Status Terkini</th></tr>
-                        </thead>
-                        <tbody>
-                            <?php $no=1; foreach($compliance as $d): ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td class="fw-bold text-primary"><?= esc($d['judul']) ?></td>
-                                <td><?= esc($d['periode_penilaian']) ?></td>
-                                <td><?= date('d M Y', strtotime($d['tanggal_penilaian'])) ?></td>
-                                <td><?= status_badge('compliance', $d['id'], $d['status']) ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Data Risk -->
-                <div class="tab-pane fade" id="risk">
-                    <table class="table table-striped" id="tableRisk">
-                        <thead class="bg-light">
-                            <tr><th>No</th><th>Judul</th><th>Kategori</th><th>Tingkat Risiko</th><th>Status Terkini</th></tr>
-                        </thead>
-                        <tbody>
-                            <?php $no=1; foreach($risk as $d): ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td class="fw-bold text-primary"><?= esc($d['judul']) ?></td>
-                                <td><?= esc($d['kategori_risiko']) ?></td>
-                                <td><span class="badge bg-<?= $d['tingkat_risiko'] == 'Tinggi' ? 'danger' : ($d['tingkat_risiko'] == 'Sedang' ? 'warning' : 'success') ?>"><?= esc($d['tingkat_risiko']) ?></span></td>
-                                <td><?= status_badge('risk', $d['id'], $d['status']) ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Data Insiden -->
-                <div class="tab-pane fade" id="insiden">
-                    <table class="table table-striped" id="tableInsiden">
-                        <thead class="bg-light">
-                            <tr><th>No</th><th>Judul</th><th>Waktu Kejadian</th><th>Jenis</th><th>Status Terkini</th></tr>
-                        </thead>
-                        <tbody>
-                            <?php $no=1; foreach($insiden as $d): ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td class="fw-bold text-primary"><?= esc($d['judul']) ?></td>
-                                <td><?= date('d M Y H:i', strtotime($d['tanggal_waktu_kejadian'])) ?></td>
-                                <td><?= esc($d['jenis_insiden']) ?></td>
-                                <td><?= status_badge('insiden', $d['id'], $d['status']) ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="tab-pane fade" id="internal-grc-tab">
+            <ul class="nav nav-tabs border-0 mb-3" style="overflow-x: auto; flex-wrap: nowrap; white-space: nowrap;">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#igrc-audit">Audit</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#igrc-comp">Compliance</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#igrc-risk">Risk</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#igrc-fraud">Fraud</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#igrc-inc">Incident</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#igrc-cyb">Cyber</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#igrc-tp">3rd Party</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#igrc-cont">Continuity</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#igrc-ctrl">Control</button></li>
+            </ul>
+            <div class="tab-content">
+                <?php 
+                $igrc_tabs = [
+                    'igrc-audit'=>$igrc_audit, 'igrc-comp'=>$igrc_compliance, 'igrc-risk'=>$igrc_risk, 
+                    'igrc-fraud'=>$igrc_fraud, 'igrc-inc'=>$igrc_incident, 'igrc-cyb'=>$igrc_cyber,
+                    'igrc-tp'=>$igrc_third_party, 'igrc-cont'=>$igrc_continuity, 'igrc-ctrl'=>$igrc_control
+                ];
+                $first = true;
+                foreach($igrc_tabs as $id => $data): ?>
+                    <div class="tab-pane fade <?= $first ? 'show active' : '' ?>" id="<?= $id ?>">
+                        <table class="table table-striped dt-table">
+                            <thead class="bg-light"><tr><th>Judul/Objek</th><th>Tanggal</th><th>Status Terkini</th></tr></thead>
+                            <tbody>
+                                <?php foreach($data as $d): ?>
+                                <tr>
+                                    <td><?= esc($d['judul'] ?? $d['no_lisensi'] ?? $d['nama_peraturan'] ?? $d['aset'] ?? $d['nama_perusahaan'] ?? $d['bia_proses'] ?? $d['nama_kontrol'] ?? 'Tanpa Judul') ?></td>
+                                    <td><?= date('d M Y', strtotime($d['created_at'])) ?></td>
+                                    <td><?= status_chain(str_replace('-', '_', $id), $d['id'], $d['status']) ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php $first = false; endforeach; ?>
             </div>
         </div>
     </div>
 </div>
 
 <?php 
-function status_badge($type, $id, $status) {
-    if ($status == 'proses') {
-        return '<span class="badge bg-secondary px-3 py-2 rounded-pill">Menunggu Approval (Proses)</span>';
-    } elseif ($status == 'ditolak') {
-        return '<span class="badge bg-danger px-3 py-2 rounded-pill status-badge" onclick="cekAlasan(\''.$type.'\', '.$id.')" title="Klik untuk melihat alasan"><i class="fas fa-times-circle me-1"></i> Ditolak (Lihat Alasan)</span>';
-    } else {
-        $levelStr = str_replace('approve_', '', $status);
-        $levelFull = ['ku' => 'Kepala Unit', 'spv' => 'Supervisor', 'mgr' => 'Managerial', 'pt' => 'Pimpinan Tinggi'][$levelStr] ?? $levelStr;
-        return '<span class="badge bg-success px-3 py-2 rounded-pill"><i class="fas fa-check-circle me-1"></i> Disetujui ('.$levelFull.')</span>';
-    }
+function status_chain($type, $id, $status) {
+    if ($status == 'proses') return '<span class="badge bg-secondary"><i class="fas fa-clock me-1"></i> Menunggu Kepala Unit</span>';
+    if ($status == 'approve_ku') return '<span class="badge bg-info text-dark"><i class="fas fa-check me-1"></i> Disetujui KU <i class="fas fa-arrow-right mx-1"></i> Menunggu SPV</span>';
+    if ($status == 'approve_spv') return '<span class="badge bg-primary"><i class="fas fa-check-double me-1"></i> Disetujui SPV <i class="fas fa-arrow-right mx-1"></i> Menunggu Managerial</span>';
+    if ($status == 'approve_mgr') return '<span class="badge bg-warning text-dark"><i class="fas fa-check-double me-1"></i> Disetujui MGR <i class="fas fa-arrow-right mx-1"></i> Menunggu Pimpinan</span>';
+    if ($status == 'approve_pt') return '<span class="badge bg-success"><i class="fas fa-stamp me-1"></i> Selesai (Disahkan Pimpinan Tinggi)</span>';
+    if ($status == 'ditolak') return '<span class="badge bg-danger" onclick="cekAlasan(\''.$type.'\', '.$id.')" style="cursor:pointer" title="Klik untuk lihat alasan"><i class="fas fa-times-circle me-1"></i> Ditolak (Lihat Alasan)</span>';
+    return '<span class="badge bg-dark">Tidak Diketahui</span>';
 }
 ?>
 
@@ -125,23 +108,14 @@ function status_badge($type, $id, $status) {
 <script src="<?= base_url('assets/extensions/jquery/jquery.min.js') ?>"></script>
 <script src="<?= base_url('assets/extensions/simple-datatables/umd/simple-datatables.js') ?>"></script>
 <script>
-    new simpleDatatables.DataTable("#tableAudit");
-    new simpleDatatables.DataTable("#tableCompliance");
-    new simpleDatatables.DataTable("#tableRisk");
-    new simpleDatatables.DataTable("#tableInsiden");
-
+    document.querySelectorAll('.dt-table').forEach(table => {
+        new simpleDatatables.DataTable(table);
+    });
     function cekAlasan(type, id) {
         $.ajax({
             url: "<?= base_url('staff/pantau-progres/detail-alasan/') ?>" + type + "/" + id,
-            type: "GET",
-            success: function(res) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Laporan Ditolak',
-                    html: `<p class="text-danger fw-bold">Alasan Penolakan:</p><div class="p-3 bg-light rounded text-start">${res.alasan_tolak}</div>`,
-                    confirmButtonText: 'Tutup',
-                    confirmButtonColor: '#d33'
-                });
+            success: function(res) { 
+                Swal.fire({ icon: 'error', title: 'Laporan Ditolak', html: `<p>Alasan Penolakan:</p><div class='bg-light p-3 rounded text-start text-danger fw-bold'>${res.alasan_tolak}</div>` }); 
             }
         });
     }
