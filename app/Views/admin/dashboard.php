@@ -6,11 +6,15 @@
         border: none;
         border-radius: 20px;
         color: white;
-        transition: transform 0.3s;
+        transition: transform 0.3s, box-shadow 0.3s;
         overflow: hidden;
+        display: block;
+        text-decoration: none;
     }
     .stat-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(0,0,0,0.2) !important;
+        color: white;
     }
     .bg-gradient-1 { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
     .bg-gradient-2 { background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%); }
@@ -27,40 +31,40 @@
 
 <div class="row">
     <div class="col-12 col-lg-3 col-md-6 mb-4">
-        <div class="card stat-card bg-gradient-1 shadow-lg">
+        <a href="<?= base_url('admin/users') ?>" class="card stat-card bg-gradient-1 shadow-lg">
             <div class="card-body px-4 py-4 position-relative">
                 <h5 class="text-white mb-1">Total Users</h5>
                 <h2 class="text-white fw-bold mb-0"><?= esc($total_users) ?></h2>
                 <i class="fas fa-users stat-icon"></i>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-12 col-lg-3 col-md-6 mb-4">
-        <div class="card stat-card bg-gradient-2 shadow-lg">
+        <a href="<?= base_url('admin/dashboard/detail/total_laporan') ?>" class="card stat-card bg-gradient-2 shadow-lg">
             <div class="card-body px-4 py-4 position-relative">
                 <h5 class="text-white mb-1">Total Laporan</h5>
                 <h2 class="text-white fw-bold mb-0"><?= esc($total_laporan) ?></h2>
                 <i class="fas fa-file-contract stat-icon"></i>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-12 col-lg-3 col-md-6 mb-4">
-        <div class="card stat-card bg-gradient-3 shadow-lg">
+        <a href="<?= base_url('admin/dashboard/detail/menunggu_approval') ?>" class="card stat-card bg-gradient-3 shadow-lg">
             <div class="card-body px-4 py-4 position-relative">
                 <h5 class="text-white mb-1">Menunggu Approval</h5>
                 <h2 class="text-white fw-bold mb-0"><?= esc($menunggu_approval) ?></h2>
                 <i class="fas fa-clock stat-icon"></i>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-12 col-lg-3 col-md-6 mb-4">
-        <div class="card stat-card bg-gradient-4 shadow-lg">
+        <a href="<?= base_url('admin/dashboard/detail/risiko_tinggi') ?>" class="card stat-card bg-gradient-4 shadow-lg">
             <div class="card-body px-4 py-4 position-relative">
                 <h5 class="text-white mb-1">Risiko Tinggi</h5>
                 <h2 class="text-white fw-bold mb-0"><?= esc($risiko_tinggi) ?></h2>
                 <i class="fas fa-exclamation-triangle stat-icon"></i>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 

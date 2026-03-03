@@ -4,9 +4,6 @@ namespace Config;
 
 use CodeIgniter\Router\RouteCollection;
 
-/**
- * @var RouteCollection $routes
- */
 $routes->get('/', 'AuthController::index');
 $routes->get('login', 'AuthController::index');
 $routes->post('auth/process', 'AuthController::process');
@@ -18,6 +15,7 @@ $routes->get('notifikasi/read-all', 'NotifikasiAction::readAll');
 
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('dashboard', 'Admin\Dashboard::index');
+    $routes->get('dashboard/detail/(:segment)', 'Admin\Dashboard::detail/$1');
     
     $routes->get('profil-perusahaan', 'Admin\ProfilPerusahaan::index');
     $routes->post('profil-perusahaan/update', 'Admin\ProfilPerusahaan::update');

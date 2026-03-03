@@ -41,14 +41,14 @@
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="fw-bold text-muted mb-2">Dari Tanggal <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" name="start_date" required>
+                    <input type="date" class="form-control border-primary" name="start_date" value="<?= $_GET['start_date'] ?? '' ?>" required>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="fw-bold text-muted mb-2">Sampai Tanggal <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" name="end_date" required>
+                    <input type="date" class="form-control border-primary" name="end_date" value="<?= $_GET['end_date'] ?? '' ?>" required>
                 </div>
                 <div class="col-md-2 mb-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100 rounded-pill shadow-sm"><i class="fas fa-search me-2"></i>Cari</button>
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill shadow-sm"><i class="fas fa-search me-2"></i>Cari Data</button>
                 </div>
             </div>
         </form>
@@ -56,27 +56,54 @@
 </div>
 
 <?php if(isset($_GET['staff_id'])): ?>
-<div class="card shadow border-0 rounded-4">
+<div class="card shadow border-0 rounded-4 mb-5">
     <div class="card-header bg-white border-bottom rounded-top-4 py-3">
-        <h4 class="card-title text-success m-0"><i class="fas fa-list me-2"></i>Hasil Pemantauan Laporan</h4>
+        <h4 class="card-title text-success m-0"><i class="fas fa-list me-2"></i>Hasil Pemantauan Laporan Staff</h4>
     </div>
     <div class="card-body p-4">
-        <table class="table table-striped" id="tableLaporan">
-            <thead class="bg-light">
-                <tr>
-                    <th>No</th>
-                    <th>Judul Laporan</th>
-                    <th>Tanggal</th>
-                    <th>Jenis Form</th>
-                    <th>Status Akhir</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="5" class="text-center text-muted py-4"><i>Belum ada data laporan pada rentang tanggal tersebut.</i></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover dt-table" id="tableLaporan">
+                <thead class="bg-light">
+                    <tr>
+                        <th width="5%">No</th>
+                        <th>Judul / Objek Laporan</th>
+                        <th>Tanggal Submit</th>
+                        <th>Jenis Form Laporan</th>
+                        <th>Status Terkini</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if(empty($laporan)): ?>
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4"><i>Belum ada data laporan dari staff ini pada rentang tanggal tersebut.</i></td>
+                    </tr>
+                    <?php else: ?>
+                        <?php 
+                        function status_chain($status) {
+                            if ($status == 'proses') return '<span class="badge bg-secondary"><i class="fas fa-clock me-1"></i> Menunggu Kepala Unit</span>';
+                            if ($status == 'approve_ku') return '<span class="badge bg-info text-dark"><i class="fas fa-check me-1"></i> Disetujui KU <i class="fas fa-arrow-right mx-1"></i> Menunggu SPV</span>';
+                            if ($status == 'approve_spv') return '<span class="badge bg-primary"><i class="fas fa-check-double me-1"></i> Disetujui SPV <i class="fas fa-arrow-right mx-1"></i> Menunggu MGR</span>';
+                            if ($status == 'approve_mgr') return '<span class="badge bg-warning text-dark"><i class="fas fa-check-double me-1"></i> Disetujui MGR <i class="fas fa-arrow-right mx-1"></i> Menunggu Pimpinan</span>';
+                            if ($status == 'approve_pt') return '<span class="badge bg-success"><i class="fas fa-stamp me-1"></i> Selesai (Final)</span>';
+                            if ($status == 'ditolak') return '<span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i> Ditolak</span>';
+                            return '<span class="badge bg-dark">Tidak Diketahui</span>';
+                        }
+
+                        $no = 1; 
+                        foreach($laporan as $d): 
+                        ?>
+                        <tr>
+                            <td><?= $no++ ?></td>
+                            <td class="fw-bold text-dark"><?= esc($d['judul']) ?></td>
+                            <td><?= date('d M Y, H:i', strtotime($d['tanggal'])) ?></td>
+                            <td><span class="badge bg-primary bg-opacity-75 rounded-pill px-3"><?= esc($d['jenis_form']) ?></span></td>
+                            <td><?= status_chain($d['status']) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <?php endif; ?>
@@ -88,7 +115,10 @@
 <script src="<?= base_url('assets/extensions/simple-datatables/umd/simple-datatables.js') ?>"></script>
 <script>
     if(document.getElementById("tableLaporan")){
-        new simpleDatatables.DataTable("#tableLaporan");
+        let table = document.getElementById("tableLaporan");
+        if(table.querySelector('tbody tr td').getAttribute('colspan') !== '5'){
+            new simpleDatatables.DataTable("#tableLaporan");
+        }
     }
 
     function loadHierarchy(atasan_id, target_select) {
