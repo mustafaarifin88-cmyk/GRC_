@@ -30,7 +30,7 @@
         <div class="card stat-card bg-gradient-1 shadow-lg">
             <div class="card-body px-4 py-4 position-relative">
                 <h5 class="text-white mb-1">Total Users</h5>
-                <h2 class="text-white fw-bold mb-0">150</h2>
+                <h2 class="text-white fw-bold mb-0"><?= esc($total_users) ?></h2>
                 <i class="fas fa-users stat-icon"></i>
             </div>
         </div>
@@ -38,8 +38,8 @@
     <div class="col-12 col-lg-3 col-md-6 mb-4">
         <div class="card stat-card bg-gradient-2 shadow-lg">
             <div class="card-body px-4 py-4 position-relative">
-                <h5 class="text-white mb-1">Laporan Audit</h5>
-                <h2 class="text-white fw-bold mb-0">45</h2>
+                <h5 class="text-white mb-1">Total Laporan</h5>
+                <h2 class="text-white fw-bold mb-0"><?= esc($total_laporan) ?></h2>
                 <i class="fas fa-file-contract stat-icon"></i>
             </div>
         </div>
@@ -48,7 +48,7 @@
         <div class="card stat-card bg-gradient-3 shadow-lg">
             <div class="card-body px-4 py-4 position-relative">
                 <h5 class="text-white mb-1">Menunggu Approval</h5>
-                <h2 class="text-white fw-bold mb-0">12</h2>
+                <h2 class="text-white fw-bold mb-0"><?= esc($menunggu_approval) ?></h2>
                 <i class="fas fa-clock stat-icon"></i>
             </div>
         </div>
@@ -57,7 +57,7 @@
         <div class="card stat-card bg-gradient-4 shadow-lg">
             <div class="card-body px-4 py-4 position-relative">
                 <h5 class="text-white mb-1">Risiko Tinggi</h5>
-                <h2 class="text-white fw-bold mb-0">3</h2>
+                <h2 class="text-white fw-bold mb-0"><?= esc($risiko_tinggi) ?></h2>
                 <i class="fas fa-exclamation-triangle stat-icon"></i>
             </div>
         </div>

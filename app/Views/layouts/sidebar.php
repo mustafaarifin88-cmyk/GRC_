@@ -32,6 +32,20 @@ $fotoUser = session()->get('foto') ?? 'default-profile.png';
 $namaUser = session()->get('nama_lengkap') ?? 'User';
 ?>
 
+<style>
+    /* Tambahan CSS khusus agar sub-menu di sidebar ikut berwarna putih */
+    .sidebar-wrapper .menu .submenu .submenu-item a {
+        color: rgba(255, 255, 255, 0.7) !important;
+        transition: all 0.3s ease;
+    }
+    .sidebar-wrapper .menu .submenu .submenu-item.active a,
+    .sidebar-wrapper .menu .submenu .submenu-item a:hover {
+        color: #ffffff !important;
+        font-weight: 600;
+        transform: translateX(5px);
+    }
+</style>
+
 <div id="sidebar" class="active">
     <div class="sidebar-wrapper <?= $bgClass ?>">
         <div class="sidebar-header position-relative">
@@ -94,6 +108,12 @@ $namaUser = session()->get('nama_lengkap') ?? 'User';
                             <span>Setting Hirarki</span>
                         </a>
                     </li>
+                    <li class="sidebar-item <?= strpos(uri_string(), 'admin/master-data') !== false ? 'active' : '' ?>">
+                        <a href="<?= base_url('admin/master-data') ?>" class='sidebar-link'>
+                            <i class="fas fa-database"></i>
+                            <span>Master Data</span>
+                        </a>
+                    </li>
                     <li class="sidebar-item <?= uri_string() == 'admin/pantau-laporan' ? 'active' : '' ?>">
                         <a href="<?= base_url('admin/pantau-laporan') ?>" class='sidebar-link'>
                             <i class="fas fa-chart-line"></i>
@@ -115,16 +135,16 @@ $namaUser = session()->get('nama_lengkap') ?? 'User';
                         </a>
                         <ul class="submenu <?= strpos(uri_string(), 'input-data-audit') !== false ? 'active' : '' ?>">
                             <li class="submenu-item <?= uri_string() == 'staff/input-data-audit/audit-bond' ? 'active' : '' ?>">
-                                <a href="<?= base_url('staff/input-data-audit/audit-bond') ?>" class="submenu-link">Audit Bond</a>
+                                <a href="<?= base_url('staff/input-data-audit/audit-bond') ?>" class="submenu-link text-white">Audit Bond</a>
                             </li>
                             <li class="submenu-item <?= uri_string() == 'staff/input-data-audit/compliance-bond' ? 'active' : '' ?>">
-                                <a href="<?= base_url('staff/input-data-audit/compliance-bond') ?>" class="submenu-link">Compliance Bond</a>
+                                <a href="<?= base_url('staff/input-data-audit/compliance-bond') ?>" class="submenu-link text-white">Compliance Bond</a>
                             </li>
                             <li class="submenu-item <?= uri_string() == 'staff/input-data-audit/risk-bond' ? 'active' : '' ?>">
-                                <a href="<?= base_url('staff/input-data-audit/risk-bond') ?>" class="submenu-link">Risk Bond</a>
+                                <a href="<?= base_url('staff/input-data-audit/risk-bond') ?>" class="submenu-link text-white">Risk Bond</a>
                             </li>
                             <li class="submenu-item <?= uri_string() == 'staff/input-data-audit/formulir-insiden' ? 'active' : '' ?>">
-                                <a href="<?= base_url('staff/input-data-audit/formulir-insiden') ?>" class="submenu-link">Formulir Insiden</a>
+                                <a href="<?= base_url('staff/input-data-audit/formulir-insiden') ?>" class="submenu-link text-white">Formulir Insiden</a>
                             </li>
                         </ul>
                     </li>
@@ -134,15 +154,15 @@ $namaUser = session()->get('nama_lengkap') ?? 'User';
                             <span>Internal GRC</span>
                         </a>
                         <ul class="submenu <?= strpos(uri_string(), 'internal-grc') !== false ? 'active' : '' ?>">
-                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/audit-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/audit-bond') ?>">Audit Bond</a></li>
-                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/compliance-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/compliance-bond') ?>">Compliance Bond</a></li>
-                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/risk-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/risk-bond') ?>">Risk Bond</a></li>
-                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/fraud-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/fraud-bond') ?>">Fraud Bond</a></li>
-                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/incident-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/incident-bond') ?>">Incident Bond</a></li>
-                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/cyber-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/cyber-bond') ?>">Cyber Bond</a></li>
-                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/third-party-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/third-party-bond') ?>">Third Party Bond</a></li>
-                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/continuity-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/continuity-bond') ?>">Continuity Bond</a></li>
-                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/control-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/control-bond') ?>">Control Bond</a></li>
+                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/audit-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/audit-bond') ?>" class="submenu-link text-white">Audit Bond</a></li>
+                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/compliance-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/compliance-bond') ?>" class="submenu-link text-white">Compliance Bond</a></li>
+                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/risk-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/risk-bond') ?>" class="submenu-link text-white">Risk Bond</a></li>
+                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/fraud-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/fraud-bond') ?>" class="submenu-link text-white">Fraud Bond</a></li>
+                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/incident-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/incident-bond') ?>" class="submenu-link text-white">Incident Bond</a></li>
+                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/cyber-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/cyber-bond') ?>" class="submenu-link text-white">Cyber Bond</a></li>
+                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/third-party-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/third-party-bond') ?>" class="submenu-link text-white">Third Party Bond</a></li>
+                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/continuity-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/continuity-bond') ?>" class="submenu-link text-white">Continuity Bond</a></li>
+                            <li class="submenu-item <?= uri_string() == 'staff/internal-grc/control-bond' ? 'active' : '' ?>"><a href="<?= base_url('staff/internal-grc/control-bond') ?>" class="submenu-link text-white">Control Bond</a></li>
                         </ul>
                     </li>
 

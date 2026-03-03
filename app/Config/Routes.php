@@ -25,10 +25,14 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('users/edit/(:num)', 'Admin\UserCrud::edit/$1');
     $routes->post('users/update/(:num)', 'Admin\UserCrud::update/$1');
     $routes->get('users/delete/(:num)', 'Admin\UserCrud::delete/$1');
-    $routes->post('users/import', 'Admin\UserCrud::import_excel');
+    
+    // --- TAMBAHKAN ROUTE INI ---
     $routes->get('users/import_excel', static function() {
         return view('admin/user_crud/import_excel', ['title' => 'Import Data User']);
     });
+    // ---------------------------
+
+    $routes->post('users/import', 'Admin\UserCrud::import_excel');
     
     $routes->get('hierarchy', 'Admin\UserHierarchy::index');
     $routes->post('hierarchy/get_bawahan', 'Admin\UserHierarchy::get_bawahan');
@@ -37,6 +41,12 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('profil', 'Admin\ProfilUser::index');
     $routes->post('profil/update', 'Admin\ProfilUser::update');
     
+    $routes->get('master-data', 'Admin\MasterData::index');
+    $routes->post('master-data/store-area', 'Admin\MasterData::store_area');
+    $routes->get('master-data/delete-area/(:num)', 'Admin\MasterData::delete_area/$1');
+    $routes->post('master-data/store-lokasi', 'Admin\MasterData::store_lokasi');
+    $routes->get('master-data/delete-lokasi/(:num)', 'Admin\MasterData::delete_lokasi/$1');
+
     $routes->get('pantau-laporan', 'Admin\PantauLaporan::index');
     $routes->post('pantau-laporan/get-hierarchy', 'Admin\PantauLaporan::get_hierarchy_down');
     
